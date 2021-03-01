@@ -1,0 +1,46 @@
+# Con este script unimos workers al cluster de Kubernetes y, posteriormente, lo comprobamos
+
+- hosts: kubernetes-master-nodes
+  become: yes
+  tasks:
+  
+    # Se obtiene, en el MASTER, el comando de unión al cluster a ejecutar en los workers
+    - name: obtener comando de union
+      shell: kubeadm token create --print-join-command
+      register: join_command_raw
+
+    - name: set join command
+      set_fact:
+        join_command: "{{ join_command_raw.stdout_lines[0] }}"
+
+
+- hosts: kubernetes-worker-nodes
+  become: yes
+  tasks:
+  
+    # Se usa el comando obtenido en el task anterior para unir los workers al cluster
+    - name: unirse al cluster
+      shell: "{{ hostvars['master'].join_command }} >> node_joined.txt"
+      args:
+        chdir: $HOME
+        creates: node_joined.txt
+        
+        
+- hosts: kubernetes-master-nodes
+  become: yes
+  become_user: ubuntu
+  tasks:
+  
+    # Pausa de 10 segundos para esperar a la creacion del cluster 
+    - name: pausa de 10 segundos
+      pause:
+        seconds: 10  
+        
+    # Se verifica, en el MASTER, el estado del cluster
+    - name: obtener estado del cluster
+      shell: kubectl get nodes -o wide
+      register: salida_get_nodes
+      
+    - debug:
+        var: salida_get_nodes
+

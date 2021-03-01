@@ -1,0 +1,31 @@
+# Con este script unimos workers al servidor nfs
+
+- hosts: kubernetes-worker-nodes
+  become: yes
+  vars_files:
+    - env_variables
+  tasks:
+  
+    # Instalamos nfs-common
+    - name: Instalamos nfs-common
+      apt: 
+        name: nfs-common
+        state: present
+        update_cache: yes
+        
+    # Creamos el directorio compartido en los workers    
+    - name: crear directorio compartido
+      shell: mkdir {{nfs_path}}
+      ignore_errors: True
+      
+    # Montamos el directorio compartido, enlazado con el del master 
+    - name: montar nfs del lado del cliente
+      mount:
+        fstype: nfs
+        opts: defaults
+        dump: 0
+        passno: 2
+        state: mounted
+        src: "{{master_ip}}:{{nfs_path}}"
+        path: "{{nfs_path}}"
+        

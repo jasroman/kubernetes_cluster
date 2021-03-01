@@ -1,0 +1,13 @@
+[kubernetes-master-nodes]
+master  ansible_user=jasroman
+
+[kubernetes-worker-nodes]
+worker-1  ansible_user=jasroman
+worker-2  ansible_user=jasroman
+
+[kubernetes:children]
+kubernetes-master-nodes
+kubernetes-worker-nodes
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

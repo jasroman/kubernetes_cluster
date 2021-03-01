@@ -1,0 +1,91 @@
+ # Con este script instalamos y publicamos NGINX y TOMCAT en el cluster, finalmente comprobamos el estado
+ - hosts: kubernetes-master-nodes
+   become: yes
+   become_user: ubuntu
+   vars_files:
+     - env_variables
+    
+   tasks:
+    # Para evitar problemas borramos el servicio de nginx
+    - name: borrado del servicio de nginx
+      shell: kubectl delete service nginx
+      ignore_errors: yes
+      args:
+        chdir: $HOME
+    
+    # Para evitar problemas borramos el despliegue de nginx    
+    - name: borrado del despliegue de nginx
+      shell: kubectl delete deploy nginx
+      ignore_errors: yes
+      args:
+        chdir: $HOME
+      
+    # Se crea el despliegue de nginx
+    - name: crear despliegue de nginx
+      shell: kubectl create deployment nginx --image=nginx
+      ignore_errors: yes
+      args:
+        chdir: $HOME
+
+      
+    # Se expone nginx como servicio  
+    - name: exponer nginx como servicio nodeport
+      shell: kubectl expose deploy nginx --port 80 --type NodePort
+      ignore_errors: yes
+      args:
+        chdir: $HOME 
+        
+        
+    # Para evitar problemas borramos el servicio de tomcat    
+    - name: borrado del servicio de tomcat
+      shell: kubectl delete service tomcatinfra
+      ignore_errors: yes
+      args:
+        chdir: $HOME
+    
+    # Para evitar problemas borramos el despliegue de tomcat     
+    - name: borrado del despliegue de tomcat
+      shell: kubectl delete deploy tomcatinfra
+      ignore_errors: yes
+      args:
+        chdir: $HOME
+      
+    # Se crea el despliegue de tomcat
+    - name: crear despliegue de tomcat
+      shell: kubectl create deployment tomcatinfra --image=saravak/tomcat8
+      ignore_errors: yes
+      args:
+        chdir: $HOME
+
+      
+    # Se expone nginx como servicio  
+    - name: exponer tomcat como servicio nodeport
+      shell: kubectl expose deploy tomcatinfra --port 80 --target-port 8080 --type NodePort
+      ignore_errors: yes
+      args:
+        chdir: $HOME 
+    
+    # Pausa de 30 segundos para esperar a la exposición de los servicios 
+    - name: pausa de 30 segundos
+      pause:
+        seconds: 30   
+  
+    # Se verifica, en el MASTER, el estado de los pods
+    - name: obtener estado de pods
+      shell: kubectl get pod -o wide
+      register: salida_get_pods
+      
+    - debug:
+        var: salida_get_pods
+        
+        
+    # Se verifica, en el MASTER, el estado de los servicios expuestos
+    - name: obtener estado de servicios
+      shell: kubectl get svc -o wide
+      register: salida_get_svc
+      
+    - debug:
+        var: salida_get_svc
+        
+
+      

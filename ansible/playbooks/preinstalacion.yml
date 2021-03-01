@@ -1,0 +1,39 @@
+---
+# Con este script se realizan tareas preparatorias en las 3 vm
+- hosts: all
+  become: yes
+  vars_files:
+    - env_variables
+  tasks:
+
+    # Deshabilitamos SWAP en las 3 vm
+    - name: Deshablitar SWAP
+      shell: swapoff -a
+
+    # Comentamos las entradas de swap en el fichero /etc/fstab
+    - name: Comentar entradas de SWAP en /etc/fstab
+      replace:
+        path: /etc/fstab
+        regexp: '(^/.*swap*)'
+        replace: '# \1'
+    
+    # Con las siguientes 3 tasks, actualizamos el fichero /etc/hosts de las 3 máquinas con las ip públicas del cluster
+    # De esta forma, garantizamos la visibilidad entre los nodos
+    # NOTA: Se implementa en 3 tasks separadas, pues realizarlas en bucle generaba frecuentes situaciones en las que las tareas eran SKIPPED   
+    - name: Agregar IP-Master en /etc/hosts 
+      lineinfile:
+         dest: /etc/hosts
+         line: "{{master_ip}}	master"
+         state: present
+
+    - name: Agregar IP-Worker1 en /etc/hosts
+      lineinfile:
+          dest: /etc/hosts
+          line: "{{worker1_ip}}	worker-1"
+          state: present
+
+    - name: Agregar IP-Worker2 en /etc/hosts
+      lineinfile:
+          dest: /etc/hosts
+          line: "{{worker2_ip}}	worker-2"
+          state: present

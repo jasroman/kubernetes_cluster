@@ -1,0 +1,43 @@
+# Con este script inicializamos el cluster de Kubernetes en el nodo master
+- hosts: kubernetes-master-nodes
+  become: yes
+  vars_files:
+    - env_variables
+    
+  tasks:
+   
+    # Se inicializa el cluster de Kubernetes en master
+    - name: inizializacion del cluster
+      shell: kubeadm init --pod-network-cidr {{cidr_v}}  >> cluster_initialized.txt
+      args:
+        chdir: $HOME
+        creates: cluster_initialized.txt
+
+    # Creación del directorio .kube. En este directorio se almacenarán datos de configuración, 
+    # como los archivos de claves de administrador que se necesitan para establecer conexión con el cluster, 
+    # y la dirección API del cluster
+    - name: crear directorio .kube
+      become: yes
+      become_user: ubuntu
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+
+    # Copia del fichero admin.conf, que se generó desde kubeadm init, al directorio principal de 'ubuntu'. 
+    # Esto le permitirá usar kubectl para acceder al cluster recién creado
+    - name: copiar admin.conf al directorio .kube/config del usuario 'ubuntu'
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/ubuntu/.kube/config
+        remote_src: yes
+        owner: ubuntu
+
+    # Instalación de flannel como plugin de red
+    - name: instalar plugin de red (flannel)
+      become: yes
+      become_user: ubuntu
+      command: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+      args:
+        chdir: $HOME
+        creates: pod_network_setup.txt

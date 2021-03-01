@@ -1,0 +1,57 @@
+# Con este script se realiza la instalación del software de Kubernetes y sus dependencias necesarias
+- hosts: kubernetes:children
+  become: yes
+  tasks:
+  
+   # Instalacion de docker
+   - name: instalar Docker
+     apt:
+       name: docker.io
+       state: present
+       update_cache: true
+
+   # Instalacion de apt-transport-https, que permite añadir fuentes HTTPS externas 
+   # a su lista de fuentes APT.
+   - name: instalar apt-transport-https
+     apt:
+       name: apt-transport-https
+       state: present
+
+   # Agregar la clave apt del repositorio de APT de Kubernetes para la verificación de claves
+   - name: agregar clave apt de Kubernetes
+     apt_key:
+       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+       state: present
+
+   # Agregar el repositorio de APT de Kubernetes a la lista de fuentes APT de sus servidores remotos
+   - name: agregar repositorio apt de Kubernetes
+     apt_repository:
+      repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: 'kubernetes'
+
+   # Instalación de Kubelet en las 3 vm
+   - name: instalar kubelet
+     apt:
+       name: kubelet
+       state: present
+       update_cache: true
+
+   # # Instalación de Kubeadm en las 3 vm
+   - name: instalar kubeadm
+     apt:
+       name: kubeadm
+       state: present
+
+
+- hosts: kubernetes-master-nodes
+  become: yes
+  tasks:
+  
+   # Instalación de Kubectl en master para la realización de tareas
+   # de control en el cluster 
+   - name: instalar kubectl
+     apt:
+       name: kubectl
+       state: present
+       force: yes

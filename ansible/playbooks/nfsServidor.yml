@@ -1,0 +1,56 @@
+# Con este script creamos un servidor nfs en el nodo master
+---
+- hosts: kubernetes-master-nodes
+  become: yes
+  vars_files:
+    - env_variables
+
+  tasks:
+  
+    # Instalamos nfs-common
+    - name: Instalamos nfs-common
+      apt: 
+        name: nfs-common
+        state: present
+        update_cache: yes
+        
+    # Instalamos nfs-kernel-server
+    - name: Instalamos nfs-kernel-server
+      apt: 
+        name: nfs-kernel-server
+        state: present
+        update_cache: yes
+
+
+    # Creamos directorio compartido
+    # NOTA: La task falla si el directorio ya existe, pero el error se ignora y puede continuar
+    - name: Crear directorio compartido
+      shell: mkdir {{nfs_path}}
+      ignore_errors: True 
+      
+    # Establecemos la configuracion compartida, para ello se establece una plantilla en el 
+    # fichero exports.j2, que se agrega al fichero /etc/rxports del nodo master  
+    - name: copiarexportaciones a /etc/exports
+      template: src=exports.j2 dest=/etc/exports owner=root group=root
+      
+    # Comprobamos el correcto registro en /etc/exports de master
+    - name: mostrar exports
+      shell:  "cat /etc/exports"
+      register: output_exports
+  
+    - debug:
+        var: output_exports
+        
+    # Reiniciamos el servidor nfs    
+    - name: restart nfs server
+      service: 
+         name: nfs-kernel-server
+         state: restarted
+         
+    # Comprobamos el estado de nfs tras el reinicio     
+    - name: comprobar reinicio nfs
+      shell:  "systemctl status nfs-server.service"
+      register: output_reinicio
+  
+    - debug:
+        var: output_reinicio

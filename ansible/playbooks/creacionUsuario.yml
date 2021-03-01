@@ -1,0 +1,20 @@
+# Con este script creamos un usuario para la instalación del software de Kubernetes
+- hosts: all
+  become: yes
+  tasks:
+  
+    # Con las 3 tasks de este script creamos un usuario no root en las 3 vm para realizar la instalación (ssh).
+    # Posteriormente le garantizamos permisos SU y le habilitamos las claves para que pueda realizarse la conexión ssh
+    - name: Crear usuario 'ubuntu'
+      user: name=ubuntu append=yes state=present createhome=yes shell=/bin/bash
+
+    - name: Permitir a 'ubuntu' uso sudo sin clave
+      lineinfile:
+        dest: /etc/sudoers
+        line: 'ubuntu ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Establecimiento de claves ssh para el usuario 'ubuntu'
+      authorized_key: user=ubuntu key="{{item}}"
+      with_file:
+        - ~/.ssh/id_rsa.pub

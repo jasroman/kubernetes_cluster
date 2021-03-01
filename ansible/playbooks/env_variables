@@ -1,0 +1,6 @@
+cidr_v: 172.16.0.0/16
+master_ip: 10.0.2.4
+worker1_ip: 10.0.2.5
+worker2_ip: 10.0.2.6
+nfs_path: /home/jasroman/nfs
+
