@@ -30,7 +30,7 @@ A. Preparación TERRAFORM
   4. Desde la carpeta raíz del proyecto, navegar a ./terraform/red y editar el fichero variables.tf para establecer el valor de la variable "my_public_ip" a la IP pública de la máquina. Para ello
       1. Para ello, utilizar un servicio de tipo "https://www.cual-es-mi-ip.net/"
   5. Desde la carpeta raíz del proyecto, navegar a ./terraform/nodos y editar el fichero variables.tf para establecer el valor de la variable "admin_user" al usuario que se desee
-  6. Desde la carpeta raíz del proyecto, navegar a ./terraform/globales y editar el fichero variables.tf para establecer el valor de la variable "subscription-id"" al valor correspondiente
+  6. Desde la carpeta raíz del proyecto, navegar a ./terraform/globales y editar el fichero variables.tf para establecer el valor de la variable "subscription-id" al valor correspondiente
       1. Ese valor es el obtenido en el punto 3, al ejecutar az cli
 
 <br/>
