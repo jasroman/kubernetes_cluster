@@ -26,12 +26,12 @@ A. Preparación TERRAFORM
 
   1. Clonar el repositorio
   2. Ejecutar az login para obtener acceso a nuestra instancia. Se abrirá una pantalla en un navegador web para poder introducir nuestras credenciales
-  3. Una vez identificados, se puede cerrar el navegador, y el comando az cli habrá devuelto datos de nuestra instancia. IMPORTANTE, copiar el valor del campo "id" del JSON devuelto
+  3. Una vez identificados, se puede cerrar el navegador, y el comando az login habrá devuelto datos de nuestra instancia. IMPORTANTE, copiar el valor del campo "id" del JSON devuelto
   4. Desde la carpeta raíz del proyecto, navegar a ./terraform/red y editar el fichero variables.tf para establecer el valor de la variable "my_public_ip" a la IP pública de la máquina. Para ello
       1. Para ello, utilizar un servicio de tipo "https://www.cual-es-mi-ip.net/"
   5. Desde la carpeta raíz del proyecto, navegar a ./terraform/nodos y editar el fichero variables.tf para establecer el valor de la variable "admin_user" al usuario que se desee
   6. Desde la carpeta raíz del proyecto, navegar a ./terraform/globales y editar el fichero variables.tf para establecer el valor de la variable "subscription-id" al valor correspondiente
-      1. Ese valor es el obtenido en el punto 3, al ejecutar az cli
+      1. Ese valor es el obtenido en el punto 3, tras ejecutar "az login"
 
 <br/>
 B. Creación de infraestructura en AZURE
