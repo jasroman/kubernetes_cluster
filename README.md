@@ -62,19 +62,8 @@ C. Preparación ANSIBLE
   7. Desde la carpeta raíz del proyecto, navegar a ./ansible/playbooks y editar el fichero "env_variables", cambiando el valor de  "nfs_path" por la ruta compartida por nfs entre los nodos
       
  
-<br/> 
-D. Instalación de un entorno cliente-servidor de nfs
-
-   1. NOTA: Estos pasos se pueden ejecutar en cualquier momento, antes o después de los puntos E y F. (Como requisito, se ha de haber ejecutado el punto C, como mínimo)
-   2. Abrir una consola de sh y, desde la carpeta raíz del proyecto, navegar a ./ansible. Una vez allí
-       1. Ejecutar 'ansible-playbook playbooks/nfsServidor.yml -i hosts'
-           1. El script presenta por salida estándar la comprobación final del estado del servicio linux de nfs. Se deberá obtener una última línea del estilo "Started NFS server and services"
-       2. Ejecutar 'ansible-playbook playbooks/nfsClientes.yml -i hosts'
-   3. Para comprobar el correcto funcionamiento, ir al directorio indicado por nfs_path (ver punto C.7) de worker-1 o worker-2 (ssh) y ejecutar "sudo touch prueba.txt". 
-       1. El fichero será visible desde cualquiera de las otras dos máquinas
- 
 <br/>      
-E. Creación del cluster de Kubernetes con ANSIBLE
+D. Creación del cluster de Kubernetes con ANSIBLE
 
   1. Abrir una consola de sh y, desde la carpeta raíz del proyecto, navegar a ./ansible. Una vez allí
       1. Ejecutar 'ansible-playbook playbooks/preinstalacion.yml -i hosts' 
@@ -90,7 +79,7 @@ E. Creación del cluster de Kubernetes con ANSIBLE
             "worker-2   Ready    <none>                 74s   v1.20.4   10.0.2.5      <none>        Ubuntu 18.04.5 LTS   5.4.0-1039-azure   docker://19.3.6"
 
 <br/>
-F. Despliegue de NGINX y TOMCAT con ANSIBLE
+E. Despliegue de NGINX y TOMCAT con ANSIBLE
 
   1. Abrir una consola de sh y, desde la carpeta raíz del proyecto, navegar a ./ansible. Una vez allí
       1. Ejecutar 'ansible-playbook playbooks/deploy.yml -i hosts' 
@@ -111,5 +100,16 @@ F. Despliegue de NGINX y TOMCAT con ANSIBLE
    4. Para entrar en las aplicaciones, abrir un navegador de internet, indicando la información vista en los puntos anteriores (se incluye ejemplo)
        1. NGINX: http://<ip_publica_worker_2>:30336/
        2. TOMCAT: http://<ip_publica_worker_1>:30794/
+
+<br/>
+F. Instalación de un entorno cliente-servidor de nfs
+
+   1. NOTA: Estos pasos se pueden ejecutar en cualquier momento, antes o después de los puntos E y F. (Como requisito, se ha de haber ejecutado el punto C, y la ejecución del script "playbooks/preinstalacion.yml" del punto D, como mínimo)
+   2. Abrir una consola de sh y, desde la carpeta raíz del proyecto, navegar a ./ansible. Una vez allí
+       1. Ejecutar 'ansible-playbook playbooks/nfsServidor.yml -i hosts'
+           1. El script presenta por salida estándar la comprobación final del estado del servicio linux de nfs. Se deberá obtener una última línea del estilo "Started NFS server and services"
+       2. Ejecutar 'ansible-playbook playbooks/nfsClientes.yml -i hosts'
+   3. Para comprobar el correcto funcionamiento, ir al directorio indicado por nfs_path (ver punto C.7) de worker-1 o worker-2 (ssh) y ejecutar "sudo touch prueba.txt". 
+       1. El fichero será visible desde cualquiera de las otras dos máquinas
 
 
