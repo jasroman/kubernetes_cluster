@@ -104,7 +104,7 @@ E. Despliegue de NGINX y TOMCAT con ANSIBLE
 <br/>
 F. Instalación de un entorno cliente-servidor de nfs
 
-   1. NOTA: Estos pasos se pueden ejecutar en cualquier momento, antes o después de los puntos E y F. (Como requisito, se ha de haber ejecutado el punto C, y la ejecución del script "playbooks/preinstalacion.yml" del punto D, como mínimo)
+   1. NOTA: Estos pasos se pueden ejecutar en cualquier momento, antes o después de los puntos D y E. (Como requisito, se ha de haber ejecutado el punto C, y la ejecución del script "playbooks/preinstalacion.yml" del punto D, como mínimo)
    2. Abrir una consola de sh y, desde la carpeta raíz del proyecto, navegar a ./ansible. Una vez allí
        1. Ejecutar 'ansible-playbook playbooks/nfsServidor.yml -i hosts'
            1. El script presenta por salida estándar la comprobación final del estado del servicio linux de nfs. Se deberá obtener una última línea del estilo "Started NFS server and services"
