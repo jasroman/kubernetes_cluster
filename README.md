@@ -3,7 +3,7 @@
 Este proyecto pretende la creación de la infraestructura necesaria para la creación de un cluster de Kubernetes en MS-Azure.
 Para ello, la creación de las VM se realizará mediante TERRAFORM (1 master y 2 workers). De forma que el despliegue del cluster se realizará con Ansible
 
-Posteriormente se desplegarán sobre dicho cluster una instancia de NGINX y una de TOMCAT para demostrar su funcionamiento
+Posteriormente se desplegarán sobre dicho cluster una instancia de NGINX y una de TOMCAT para demostrar su funcionamiento.
 
 
 ### Preparativos
